@@ -1,0 +1,124 @@
+* {margin: 0; padding: 0;}
+
+.container {
+	padding-top: 10%;
+	text-align: center;
+}
+
+.timer {
+	padding: 10px;
+	background: #AAAAAA;
+	display: inline-block;
+
+	border: 7px solid #efefef;
+	border-radius: 5px;
+	
+	box-shadow: 
+		inset 0 -2px 10px 1px rgba(0, 0, 0, 0.75), 
+		0 5px 20px -10px rgba(0, 0, 0, 1);
+}
+
+.cell {
+	/*Should only display 1 digit. Hence height = line height of .numbers
+	and width = width of .numbers*/
+	width: 0.60em;
+	height: 40px;
+	font-size: 50px;
+	overflow: hidden;
+	position: relative;
+	float: left;
+}
+
+.numbers {
+	width: 0.6em;
+	line-height: 40px;
+	font-family: digital, arial, verdana;
+	text-align: center;
+	
+	position: absolute;
+	top: 0px;
+	left: 0;
+
+	/*Glow to the text*/
+	text-shadow: 0 0 5px rgba(255, 255, 255, 1);
+	color: green;
+}
+
+/*Styles for the controls*/
+#timer_controls label {
+	cursor: pointer;
+	padding: 5px 10px;
+	background: #efefef;
+	font-family: arial, verdana, tahoma;
+	font-size: 20px;
+	border-radius: 0 0 3px 3px;
+}
+
+input[name="controls"] {display: none;}
+
+
+
+/*Control code*/
+#stop:checked~.timer .numbers {animation-play-state: paused;}
+#start:checked~.timer .numbers {animation-play-state: running;}
+#reset:checked~.timer .numbers {animation: none;}
+
+
+
+/*We use steps instead of linear animation.
+	10 digits = 10 steps to jump from one number to the next
+	The animation atributes we use here are:
+	- keyframes name: move
+	- Total duration of animation (1second for decimals, 10 seconds for seconds, etc...
+	- How the animation is displayed: Linear, Steps, etc
+	- Loops of the animation
+	There are more attributes. Check: http://www.w3schools.com/css3/css3_animation.asp*/
+.moveten {
+	animation: moveten 1s steps(10,end) infinite; /*1step = 1/10animation*/
+	/*-webkit-animation: move 1s steps(10,end) infinite;*/ /*For Opera, Safari and Chrome*/
+	/*By default animation should be paused*/
+	animation-play-state: paused;
+}
+.movesix {
+	animation: movesix 1s steps(6,end) infinite; /*1step = 1/6amination*/
+	/*By default animation should be paused*/
+	animation-play-state: paused;
+}
+
+/*Now we need to sync the animation speed with time speed*/
+.milisecond {animation-duration: 0.01s;} /*With moveten =>  1step = (1/10animation) * 0.01seconds/animation => 1step = 0.001seconds*/
+.tenmilisecond {animation-duration: 0.1s;} /*With moveten =>  1step = (1/10animation) * 0.1seconds/animation => 1step = 0.01seconds*/
+.hundredmilisecond {animation-duration: 1s;} /*With moveten =>  1step = (1/10animation) * 1seconds/animation => 1step = 0.1seconds*/
+.second {animation-duration: 10s;} /*With moveten =>  1step = (1/10animation) * 10seconds/animation => 1step = 1second*/
+.tensecond {animation-duration: 60s;} /*With movesix =>  1step = (1/6animation) * 60seconds/animation => 1step = 10seconds*/
+.minute {animation-duration: 600s;} /*With moveten =>  1step = (1/10animation) * 600seconds/animation => 1step = 60seconds (1minute)*/
+.tenminute {animation-duration: 3600s;} /*With movesix =>  1step = (1/6animation) * 3600seconds/animation => 1step = 600seconds (10minutes)*/
+.hour {animation-duration: 36000s;} /*With moveten =>  1step = (1/10animation) * 36000seconds/animation => 1step = 3600seconds (60minutes/1hour)*/
+.tenhour {animation-duration: 360000s;} /*With moveten =>  1step = (1/10animation) * 360000seconds/animation => 1step = 36000seconds (600minutes/10hour)*/
+
+/*Lets animate the digit now - CSS animation is managed by animation atribute and keyframes class*/
+/*We are using prefixfree, so no need of vendor prefixes*/
+/*The logic of the animation is to alter the 'top' value of the absolutely
+positioned .numbers*/
+@keyframes moveten {
+	0% {top: 0px;}
+	100% {top: -400px;} 
+	/*height = 40. digits = 10. hence -400 to move it completely to the top*/
+}
+@keyframes movesix {
+	0% {top: 0;}
+	100% {top: -240px;} 
+	/*height = 40. digits = 6. hence -240 to move it completely to the top*/
+}
+
+/*For Opera, Safari and Chrome if not using prefixfree*/
+@-webkit-keyframes moveten {
+	from {top: 0px;}
+	to {top: -400px;} 
+}
+
+/*Lets use a better font for the numbers*/
+@font-face {
+	font-family: 'digital';
+	src: url('../fonts/DS-DIGI.TTF');
+}

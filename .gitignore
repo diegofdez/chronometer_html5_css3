@@ -1,2 +1,6 @@
 
 .DS_Store
+
+heroku keys:add
+
+heroku keys:add.pub
